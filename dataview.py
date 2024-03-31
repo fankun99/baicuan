@@ -16,7 +16,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QThread, pyqtSignal, QCoreApplication
 # import geoip2.database
-import pandas as pd
+# import pandas as pd
 from PyQt5.QtWidgets import QHBoxLayout, QWidgetItem, QLayoutItem
 from PyQt5 import QtCore
 from PyQt5.QtGui import QFontMetrics
@@ -817,16 +817,17 @@ class DataDisplay(QWidget):
 
     def read_data_from_xlsx(self, fileName):
         data_list = []
-        try:
-            df = pd.read_excel(fileName, engine='openpyxl')
-            # header = list(df.columns)
-            for index, row in df.iterrows():
-                row_dict = row.apply(lambda x: str(x))  # 将所有值转换为字符串
-                row_dict = row_dict.to_dict()
-                data_list.append(row_dict)
-            return data_list
-        except Exception as e:
-            raise ValueError(f"无法读取XLSX文件: {str(e)}")
+        # try:
+        #     df = pd.read_excel(fileName, engine='openpyxl')
+        #     # header = list(df.columns)
+        #     for index, row in df.iterrows():
+        #         row_dict = row.apply(lambda x: str(x))  # 将所有值转换为字符串
+        #         row_dict = row_dict.to_dict()
+        #         data_list.append(row_dict)
+        #     return data_list
+        # except Exception as e:
+        #     raise ValueError(f"无法读取XLSX文件: {str(e)}")
+        return data_list
 
     def read_data_from_csv(self, fileName):
         data_list = []
@@ -910,9 +911,21 @@ class DataDisplay(QWidget):
                 # self.data_list = self.deal_with_data(data_list) # 这里是kscan的处理
                 print(data_list)
                 self.data_list = data_list
+
+                self.Summary_Table = {}  # 总表
+                self.Port_Table = {}
+                self.Protocol_Table = {}
+                self.Vuln_Table = {}
+                self.CVE_Verify_Table = {}
+                self.Product_Table = {}
+                self.City_Table = {}
+                self.IPC_Table = {}
+
+
                 self.search_data_Table = {}
                 self.update_data()
                 self.search_data(init=True)
+
             except Exception as e:
                 traceback.print_exc()
                 QMessageBox.critical(self, "错误", str(e))
@@ -1352,20 +1365,20 @@ class DataDisplay(QWidget):
             info_widget = QWidget()
             info_widget.setLayout(info_layout)  # 将 QVBoxLayout 设置为 QWidget 的布局
             info_widget.setStyleSheet("background-color: white;")  # 设置 QWidget 的背景色为蓝色
-            info_widget.setMinimumHeight(240)
+            info_widget.setMinimumHeight(280)
 
             pro_port_layout = QVBoxLayout()
-            pro_port_widget = QWidget()  
-            pro_port_widget.setLayout(pro_port_layout)  
-            pro_port_widget.setStyleSheet("background-color: white;")  
+            pro_port_widget = QWidget()
+            pro_port_widget.setLayout(pro_port_layout)
+            pro_port_widget.setStyleSheet("background-color: white;")
 
             # 设置右侧ip信息栏与端口信息栏的布局显示比例
-            all_info_layout.addWidget(pro_port_widget, self.proportion)  # 将包含 pro_port_layout 的 QWidget 添加到 all_info_layout 中
+            all_info_layout.addWidget(pro_port_widget,
+                                      self.proportion)  # 将包含 pro_port_layout 的 QWidget 添加到 all_info_layout 中
             all_info_layout.addWidget(info_widget, 1)  # 将包含 info_layout 的 QWidget 添加到 all_info_layout 中
 
             # -----------------------------------------------------------
             city_code_layout = QHBoxLayout()
-            other_layout = QVBoxLayout()
 
             # 创建一个水平布局用于放置端口和协议
             self.port_info_layout = QVBoxLayout()
@@ -1401,7 +1414,6 @@ class DataDisplay(QWidget):
                     # 设置表格的水平表头对齐方式为左对齐
                     port_info_table.horizontalHeader().setDefaultAlignment(QtCore.Qt.AlignLeft)
 
-
                     more_button = QPushButton("查看更多")
                     more_button.setCursor(Qt.PointingHandCursor)
                     more_button.setFixedWidth(120)
@@ -1413,7 +1425,7 @@ class DataDisplay(QWidget):
                                ports_pros_updatTimes_products=ports_pros_updatTimes_products:
                         self.toggleMoreButton(more_button, pro_port_table, scroll_area, ports_pros_updatTimes_products))
 
-                    # print(ports_pros_updatTimes_products)    
+                    # print(ports_pros_updatTimes_products)
                     self.show_pro_port_table(port_info_table, scroll_area, ports_pros_updatTimes_products)
 
                 if key == "vulns":
@@ -1452,7 +1464,8 @@ class DataDisplay(QWidget):
                             cve_button.setFixedSize(button_width, button_height)
                             cve_button.setStyleSheet(
                                 "background-color: #99badd; color: white;text-align: center;border-radius:10px;")
-                            cve_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)  # 设置按钮的大小策略为水平方向自适应，垂直方向固定
+                            cve_button.setSizePolicy(QSizePolicy.Expanding,
+                                                     QSizePolicy.Fixed)  # 设置按钮的大小策略为水平方向自适应，垂直方向固定
 
                             # 计算按钮文本的最大宽度
                             font_metrics = QFontMetrics(cve_button.font())
@@ -1460,7 +1473,8 @@ class DataDisplay(QWidget):
 
                             # 如果文本的宽度超过了按钮文本的最大宽度，则进行截断
                             if font_metrics.width(vuln.strip()) > max_button_text_width:
-                                ellipsis_text = font_metrics.elidedText(vuln.strip(), Qt.ElideRight, max_button_text_width)
+                                ellipsis_text = font_metrics.elidedText(vuln.strip(), Qt.ElideRight,
+                                                                        max_button_text_width)
                             else:
                                 ellipsis_text = vuln.strip()
                             cve_button.setText(ellipsis_text)
@@ -1470,19 +1484,24 @@ class DataDisplay(QWidget):
                                 _col = 0
                                 _row += 1
 
+                # 创建滚动区域
+                ip_info_scroll_area = QScrollArea()
+                ip_info_scroll_area.setWidgetResizable(True)  # 使内部部件大小可调整
+                ip_info_scroll_area.setMinimumWidth(250)  # 设置滚动区域的最小宽度
+
                 # 创建表格
-                tableWidget = QTableWidget()
-                tableWidget.setColumnCount(2)  # 列数
-                tableWidget.setShowGrid(False)  # 不显示网格线
+                ip_info_tableWidget = QTableWidget()
+                ip_info_tableWidget.setColumnCount(2)  # 列数
+                ip_info_tableWidget.setShowGrid(False)  # 不显示网格线
                 # 设置列宽
-                tableWidget.setColumnWidth(0, 105)  # 第一列宽度
-                tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
-                tableWidget.setEditTriggers(QTableWidget.NoEditTriggers)
+                ip_info_tableWidget.setColumnWidth(0, 105)  # 第一列宽度
+                ip_info_tableWidget.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+                ip_info_tableWidget.setEditTriggers(QTableWidget.NoEditTriggers)
                 # tableWidget.setMinimumHeight(220)  # 设置表格的最小高度为200像素
 
                 # 隐藏行号和列号
-                tableWidget.verticalHeader().setVisible(False)
-                tableWidget.horizontalHeader().setVisible(False)
+                ip_info_tableWidget.verticalHeader().setVisible(False)
+                ip_info_tableWidget.horizontalHeader().setVisible(False)
 
                 row_count = 0
                 # 填充数据
@@ -1538,25 +1557,27 @@ class DataDisplay(QWidget):
                             value_item.setToolTip(str(title_all))
 
                     # 插入表格项到表格
-                    tableWidget.insertRow(row_count)
-                    tableWidget.setItem(row_count, 0, key_item)
-                    tableWidget.setItem(row_count, 1, value_item)
+                    ip_info_tableWidget.insertRow(row_count)
+                    ip_info_tableWidget.setItem(row_count, 0, key_item)
+                    ip_info_tableWidget.setItem(row_count, 1, value_item)
                     # 增加行数
                     row_count += 1
 
                 # 计算表格的总高度
                 total_height = 0
-                for row in range(tableWidget.rowCount()):
-                    total_height += tableWidget.rowHeight(row)
+                for row in range(ip_info_tableWidget.rowCount()):
+                    total_height += ip_info_tableWidget.rowHeight(row)
                 extra_space = 20
-                # 设置表格的大小
-                tableWidget.setMinimumHeight(total_height + extra_space)
+                ip_info_tableWidget.setMinimumHeight(total_height + extra_space)  # 设置表格的大小
+
+                # 将表格放入滚动区域
+                ip_info_scroll_area.setWidget(ip_info_tableWidget)
 
             # 添加伸缩空间，确保按钮在窗口缩小时换行显示
             spacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
             city_code_layout.addItem(spacer)
             info_layout.addLayout(city_code_layout)
-            info_layout.addWidget(tableWidget)
+            info_layout.addWidget(ip_info_scroll_area)
 
             # CVE
             # 将小部件设置为滚动区域的内容
@@ -1567,6 +1588,7 @@ class DataDisplay(QWidget):
                 info_layout.addStretch()
 
             # 将表格放入滚动区域
+            # port_info_table.setMinimumHeight(300) # 设置表格的大小
             scroll_area.setWidget(port_info_table)
             self.port_info_layout.addWidget(scroll_area)
             # 如果行数超过指定数，则显示“查看更多”按钮

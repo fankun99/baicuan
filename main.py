@@ -1,3 +1,5 @@
+import os
+import shutil
 from datetime import datetime
 import json
 import base64
@@ -23,10 +25,27 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QVBoxLayout, QWid
     QGroupBox, QCheckBox, QMessageBox, QScrollArea, QDialog, QProgressBar
 from configobj import ConfigObj
 import dataview as data_view
+
 from qt_material import apply_stylesheet  # 导入qt_material
+
+if sys.argv[-1].endswith("exe"):
+    # 获取临时目录路径
+    temp_dir = sys._MEIPASS
+    # 获取icon释放的文件
+    icon_path = os.path.join(temp_dir, 'icon')
+    current_directory = os.getcwd()
+    folder_path = os.path.join(current_directory, "icon")
+    if not os.path.exists(folder_path):
+        try:
+            shutil.copytree(icon_path, folder_path)
+        except Exception as e:
+            print(f"An error occurred: {e}")
+
+
 
 config_dic = {}
 cf = ConfigParser()
+
 
 # 读取config.ini文件，获取需要的配置信息
 try:
