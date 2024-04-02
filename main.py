@@ -1667,6 +1667,7 @@ class FofaPage(QWidget):
         else:
             self.log_display.append('错误：' + str(html) + '\n' + '-' * 29)
         self.search_thread = None
+        self.signal_data_ok.emit()
 
     def add_row_to_table(self, data: list, column_mapping: dict):
         row = self.result_table.rowCount()  # 获取当前行数
