@@ -1623,6 +1623,9 @@ class DataDisplay(QWidget):
         else:
             _data = ports_pros_updatTimes_products[self.max_len:]
 
+        port_record_count = len(_data)
+        print('port record line : ', port_record_count)  # 如果端口数太多，界面会卡死
+
         # 将数据填充到表格中
         for row, item in enumerate(_data):  # 最多显示前20行
             item = ast.literal_eval(item)
@@ -1661,6 +1664,9 @@ class DataDisplay(QWidget):
             num_columns = 3  # 每行最多显示的按钮数量
             _row = 0
             _col = 0
+
+
+
             for product in products:
                 if len(str(product).strip()) > 0:
                     # button = QPushButton(p.strip())  # 去除首尾空格
@@ -1714,13 +1720,16 @@ class DataDisplay(QWidget):
                 pro_port_table.resizeRowsToContents()
                 pro_port_table.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
             else:
-                pro_port_table.setRowCount(pro_port_table.rowCount() + 1)
-                pro_port_table.setCellWidget(row + self.max_len, 0, protocol_widget)  # 第一列：协议
-                pro_port_table.setCellWidget(row + self.max_len, 1, port_widget)  # 第二列：端口
-                pro_port_table.setCellWidget(row + self.max_len, 2, product_widget)
-                pro_port_table.setItem(row + self.max_len, 3, update_time_item)  # 第三列：更新时间
-                pro_port_table.setRowHeight(row + self.max_len, 60)
-                pro_port_table.update()  # 强制更新布局，如果不添加的话，会照成表格不会自适应
+                if row > 200:
+                    break
+                else:
+                    pro_port_table.setRowCount(pro_port_table.rowCount() + 1)
+                    pro_port_table.setCellWidget(row + self.max_len, 0, protocol_widget)  # 第一列：协议
+                    pro_port_table.setCellWidget(row + self.max_len, 1, port_widget)  # 第二列：端口
+                    pro_port_table.setCellWidget(row + self.max_len, 2, product_widget)
+                    pro_port_table.setItem(row + self.max_len, 3, update_time_item)  # 第三列：更新时间
+                    pro_port_table.setRowHeight(row + self.max_len, 60)
+                    pro_port_table.update()  # 强制更新布局，如果不添加的话，会照成表格不会自适应
 
             # 在网格布局中添加一个空白的 QWidget 作为弹簧，让产品按钮靠左显示。
             spring_widget = QWidget()

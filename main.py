@@ -259,7 +259,7 @@ class EasySearchPage(QWidget):
 
         self.search_field_comboBox = QComboBox()  # 创建下拉框
         self.search_field_comboBox.addItems(
-            ["ip/段", "域名", "证书Subject", "端口", "国家", "title", "header", "body", "组织", "自定义"])  # 添加下拉选项
+            ["ip/段", "域名", "证书", "端口", "国家", "title", "header", "body", "组织", "自定义"])  # 添加下拉选项
         self.search_field_comboBox.setStyleSheet(self.combo_box_style)
         self.search_field_comboBox.setObjectName('search_type')
 
@@ -650,7 +650,7 @@ class AllInOnePage(QWidget):
 
         self.search_field_comboBox = QComboBox()  # 创建下拉框
         self.search_field_comboBox.addItems(
-            ["ip/段", "域名", "证书Subject", "端口", "国家", "title", "header", "body", "组织", "自定义"])  # 添加下拉选项
+            ["ip/段", "域名", "证书", "端口", "国家", "title", "header", "body", "组织", "自定义"])  # 添加下拉选项
         self.search_field_comboBox.setStyleSheet(self.combo_box_style)
         self.search_field_comboBox.setObjectName('search_type')
 
