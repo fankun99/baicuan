@@ -1622,7 +1622,6 @@ class FofaPage(QWidget):
                 # print(result)
 
                 self.fofa_current_data.append(result['results'])
-                self.signal_data_ok.emit()
 
                 for link in result['results']:
                     host = link[0]
